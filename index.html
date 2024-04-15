@@ -84,7 +84,7 @@ function consultarOferta() {
     let urlConsulta = '';
 
     if (urlOferta && (!nroAliado || !nroOferta)) {
-        let url = urlOferta.trim().slice(26);
+        let url = urlOferta.trim().slice(25);
         let partesURL = url.split('/');
         if (partesURL.length >= 2) {
             nroAliado = partesURL[0];
