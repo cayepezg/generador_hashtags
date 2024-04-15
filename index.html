@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Hashtags</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .input-group {
+            display: flex;
+            margin-bottom: 15px;
+            width: 80%;
+        }
+
+        .input-group label {
+            margin-right: 10px;
+        }
+
+        .input-group input {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 80%;
+        }
+
+        .button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .result {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Generador de Hashtags de Oferta</h1>
+
+    <div class="input-group">
+        <label for="url_oferta">URL Oferta:</label>
+        <input type="text" id="url_oferta" name="url_oferta">
+    </div>
+
+    <div class="input-group">
+        <label for="nroaliado">Nro. Aliado:</label>
+        <input type="text" id="nroaliado" name="nroaliado">
+    </div>
+
+    <div class="input-group">
+        <label for="nrooferta">Nro. Oferta:</label>
+        <input type="text" id="nrooferta" name="nrooferta">
+    </div>
+
+    <button class="button" onclick="consultarOferta()">Genera Hashtags</button>
+
+    <div id="result" class="result"></div>
+</div>
+
+<script>
+function consultarOferta() {
+    let urlOferta = document.getElementById('url_oferta').value;
+    let nroAliado = document.getElementById('nroaliado').value;
+    let nroOferta = document.getElementById('nrooferta').value;
+
+    let urlConsulta = '';
+
+    if (urlOferta && (!nroAliado || !nroOferta)) {
+        let url = urlOferta.trim().slice(26);
+        let partesURL = url.split('/');
+        if (partesURL.length >= 2) {
+            nroAliado = partesURL[0];
+            nroOferta = partesURL[1];
+
+            document.getElementById('nroaliado').value = nroAliado;
+            document.getElementById('nrooferta').value = nroOferta;
+
+            urlConsulta = `https://micropersona.xityclub.com/hashtag/1/${nroAliado}/${nroOferta}`;
+        } else {
+            alert('URL inválida');
+        }
+
+    } else if (nroAliado && nroOferta) {
+        urlConsulta = `https://micropersona.xityclub.com/hashtag/1/${nroAliado}/${nroOferta}`;
+    } else {
+        alert('Datos inválidos. Debe introducir la URL de la oferta o el número de aliado y el número de oferta');
+    }
+
+    if (urlConsulta) {
+        fetch(urlConsulta)
+            .then(response => response.json())
+            .then(data => {
+                const resultado = document.getElementById('result');
+                let list = JSON.stringify(data.hashtags).trim().replace("\"", "").replaceAll("\\", "").split(",");
+                let listResult = "";
+                for (let i = 0; i < list.length; i++) {
+                    listResult = `${listResult}<br>${list[i]}`;
+                }
+
+                resultado.innerHTML = listResult;
+            })
+            .catch(error => {
+                console.error(error);
+                const resultado = document.getElementById('result');
+                resultado.innerHTML = 'Error al consultar la oferta.';
+            });
+    } else {
+        const resultado = document.getElementById('result');
+        resultado.innerHTML = 'Complete al menos un campo para realizar la consulta.';
+    }
+}
+</script>
+</body>
+</html>
+
