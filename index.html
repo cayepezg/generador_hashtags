@@ -142,10 +142,14 @@ function consultarOferta() {
             .then(response => response.json())
             .then(data => {
                 const resultado = document.getElementById('result');
-                let list = JSON.stringify(data.hashtags);
+                let list = data.hashtags;
                 let listResult = "";
                 for (let i = 0; i < list.length; i++) {
-                    listResult = `${listResult}<br>${list[i]}`;
+                    if(listResult === "") {
+                        listResult = list[i];
+                    } else {
+                        listResult = `${listResult}<br>${list[i]}`;
+                    }
                 }
 
                 resultado.innerHTML = listResult;
