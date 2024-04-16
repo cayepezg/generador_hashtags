@@ -49,10 +49,42 @@
             padding: 10px;
             border-radius: 5px;
         }
+
+
+        /* COMIENZO SPINNER */
+        body{
+            margin: 0;
+            padding:0;
+        }
+        @keyframes gira-spinner {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .spinner {
+            position: absolute;
+            display: none;
+            place-content: center;
+            height: 100svh;
+            backdrop-filter: blur(2px);
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+        .spinner img{
+            animation: gira-spinner 2s linear infinite;
+            width: 50%;
+            max-width: 250px;
+            margin: 0 auto;
+        }
+        /* FIN SPINNER */
     </style>
 </head>
 <body>
 <div class="container">
+    <div class="spinner">
+        <img src="./img/spinner.png" alt="">
+    </div>
+
+
     <h1>Generador de Hashtags de Oferta</h1>
 
     <div class="input-group">
@@ -105,6 +137,7 @@ function consultarOferta() {
     }
 
     if (urlConsulta) {
+        spinnerActive(true);
         fetch(urlConsulta)
             .then(response => response.json())
             .then(data => {
@@ -121,10 +154,20 @@ function consultarOferta() {
                 console.error(error);
                 const resultado = document.getElementById('result');
                 resultado.innerHTML = 'Error al consultar la oferta.';
+            }).finally(() => {
+                spinnerActive(false);
             });
     } else {
         const resultado = document.getElementById('result');
         resultado.innerHTML = 'Complete al menos un campo para realizar la consulta.';
+    }
+}
+
+function spinnerActive(estado){
+    if(estado){
+        document.querySelector('.spinner').style.display = 'grid';
+    } else {
+        document.querySelector('.spinner').style.display = 'none';
     }
 }
 </script>
